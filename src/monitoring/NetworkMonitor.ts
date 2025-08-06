@@ -99,26 +99,4 @@ export class NetworkMonitor {
     const regex = new RegExp(regexPattern, "i") // Case insensitive
     return regex.test(url)
   }
-
-  public get isMonitoring(): boolean {
-    return this.observer !== null
-  }
-
-  public get processedCount(): number {
-    return this.processedUrls.size
-  }
-
-  public clearProcessedUrls(): void {
-    this.processedUrls.clear()
-  }
-
-  public addPatterns(patterns: string[]): void {
-    this.urlPatterns.push(...patterns)
-  }
-
-  public removePatterns(patterns: string[]): void {
-    this.urlPatterns = this.urlPatterns.filter(
-      (pattern) => !patterns.includes(pattern)
-    )
-  }
 }

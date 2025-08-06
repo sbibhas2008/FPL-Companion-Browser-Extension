@@ -11,6 +11,9 @@ export class PlayerClickedEventProducer implements EventProducer {
   private isInitialized = false
   private networkMonitor: NetworkMonitor
   private readonly EVENT_NAME = EventName.FPL_PLAYER_CLICKED
+  private ApiUrlPattern = "*://fantasy.premierleague.com/api/element-summary/*"
+  // Match patterns like: https://fantasy.premierleague.com/api/element-summary/{player_id}/
+  private readonly ApiUrlRegex = /\/api\/element-summary\/(\d+)\//
 
   constructor() {
     this.networkMonitor = new NetworkMonitor()
@@ -35,13 +38,9 @@ export class PlayerClickedEventProducer implements EventProducer {
   }
 
   private setupNetworkMonitoring(): void {
-    // Start monitoring FPL element-summary API requests
-    this.networkMonitor.startMonitoring(
-      ["*://fantasy.premierleague.com/api/element-summary/*"],
-      (url: string) => {
-        this.handleNetworkRequest(url)
-      }
-    )
+    this.networkMonitor.startMonitoring([this.ApiUrlPattern], (url: string) => {
+      this.handleNetworkRequest(url)
+    })
   }
 
   public get initialized(): boolean {
@@ -49,8 +48,7 @@ export class PlayerClickedEventProducer implements EventProducer {
   }
 
   private extractPlayerIdFromUrl(url: string): string | null {
-    // Match patterns like: https://fantasy.premierleague.com/api/element-summary/{player_id}/
-    const playerIdMatch = url.match(/\/api\/element-summary\/(\d+)\//)
+    const playerIdMatch = url.match(this.ApiUrlRegex)
     if (playerIdMatch) {
       return playerIdMatch[1]
     }
