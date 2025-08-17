@@ -1,5 +1,3 @@
-import { get } from "http"
-
 import type { EventProducer } from "~src/events"
 import {
   cleanupEventProducers,
